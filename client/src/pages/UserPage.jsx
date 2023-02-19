@@ -1,24 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Select,
-  Table,
-  TableContainer,
-  Tbody,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import {Box,Button,ButtonGroup,Select,Table,TableContainer,Tbody,Th,Thead,Tr} from "@chakra-ui/react";
 import TableRow from "../components/TableRow";
 import countries from './../data/country.json';
+import AlertComponent from "../components/AlertComponent";
 
 const UserPage = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  const [showAlert,setShowAlert]=useState(false);
   let filterKey=useRef({age:"",country:"",gender:""});
   const URL="https://cointab-server-t1qu.onrender.com/getUsersData";
+
   const getData = async () => {
     const filterConditions=[];
     if( filterKey.current.age !== "" ){
@@ -59,6 +51,7 @@ const UserPage = () => {
     }
     filterData();
   }
+
   const filterData= async ()=>{
     const filterConditions=[];
     if( filterKey.current.age !== "" ){
@@ -84,12 +77,30 @@ const UserPage = () => {
       console.log(error);
     }
   }
+
+  const showAlertFun=()=>{
+    setTimeout(()=>{
+      if( data.length === 0 ){
+        setShowAlert(true);
+      }
+      setTimeout(()=>{
+        setShowAlert(false);
+      },3000)
+    },3000)
+  }
+
   useEffect(() => {
     getData();
+    showAlertFun();
   }, [page]);
+
+
   return (
     <Box>
-      <Box display="flex" flexDir="row" w="900px" m="auto" onChange={handleSelect}>
+      <Box w="500px" m="auto" h="40px">
+        {showAlert ? <AlertComponent message={"Go to home page and fetch data first!"} status="warning" /> : null}
+      </Box>
+      <Box display="flex" flexDir={["column","column","row"]} w="900px" m="auto" onChange={handleSelect}>
         <Select w="200px" m="20px" name="gender">
           <option value="">Choose the gender</option>
           <option value="male">Men</option>

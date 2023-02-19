@@ -11,6 +11,7 @@ const HomePage = () => {
   const [dataFetchedSuccess,setDataFetchedSuccess]=useState(false);
   const [deleteAlert,setDeleteAlert]=useState(false);
   const [dataNotFoundAlert,setDataNotFound]=useState(false);
+  
   const navigate=useNavigate();
   const handleAlert=(setFunction)=>{
     setFunction(true);
