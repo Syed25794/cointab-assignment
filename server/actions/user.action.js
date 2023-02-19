@@ -1,6 +1,5 @@
 const  https  = require('https');
 const Data = require("../models/Data.model");
-const connection = require("./../config/database");
 
 const getData = async (req, res) => {
   const isDataExists = await Data.find();
@@ -65,6 +64,26 @@ const getUsersData = async ( req, res )=>{
 }
 
 const filterUsersData = async ( req, res )=>{
+  const { age, gender, country } = req.query;
+  const query={};
+  if( age ){
+    query["$and"]=[{'dob.age':{$gte:Number(age)-24}},{'dob.age':{$lte:Number(age)}}]
+  }
+  if( gender ){
+    query["gender"]=gender;
+  }
+  if( country ){
+    query["location.country"]=country;
+  }
+  const results = await Data.find(query);
+  try {
+    const results = await Data.find(query).catch((err) => {
+      console.error(err);
+    });    
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(404).send(error);
+  }
 
 }
 module.exports = {getData,deleteData,getUsersData,filterUsersData};
