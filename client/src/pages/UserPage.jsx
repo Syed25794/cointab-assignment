@@ -110,7 +110,7 @@ const UserPage = () => {
           <option value={25}>0-25</option>
           <option value={50}>26-50</option>
           <option value={75}>51-75</option>
-          <option value={76}>Above 75</option>
+          <option value={100}>Above 75</option>
         </Select>
         <Select w="200px" m="20px" name="country" onChange={handleSelect}>
           <option value="">Choose the country</option>
