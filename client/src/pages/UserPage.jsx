@@ -18,11 +18,25 @@ const UserPage = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   let filterKey=useRef({age:"",country:"",gender:""});
-  console.log(data);
+  const URL="https://cointab-server-t1qu.onrender.com/getUsersData";
   const getData = async () => {
+    const filterConditions=[];
+    if( filterKey.current.age !== "" ){
+      filterConditions.push(`age=${filterKey.current.age}`);
+    } 
+    if( filterKey.current.gender !== "" ){
+      filterConditions.push(`gender=${filterKey.current.gender}`);
+    } 
+    if( filterKey.current.country !== "" ){
+      filterConditions.push(`country=${filterKey.current.country}`);
+    }
+    let url = URL;
+    url+=`?page=${page}`;
+    for(let i=0;i<filterConditions.length;i++){
+      url+="&"+filterConditions[i];
+    }    
     try {
-      let response = await fetch(
-        `https://cointab-server-t1qu.onrender.com/getUsersData?page=${page}`,
+      let response = await fetch(url,
         { method: "GET", headers: { "Content-Type": "application/json" } }
       );
       let data = await response.json();
@@ -44,7 +58,6 @@ const UserPage = () => {
       filterKey.current['country']=value;
     }
     filterData();
-    console.log(filterKey);
   }
   const filterData= async ()=>{
     const filterConditions=[];
@@ -58,19 +71,15 @@ const UserPage = () => {
       filterConditions.push(`country=${filterKey.current.country}`);
     }
     try {
-      let url="https://cointab-server-t1qu.onrender.com/filterData";
+      let url=URL;
+      url+=`?page=${page}`;
       for(let i=0;i<filterConditions.length;i++){
-        if( i === 0 ){
-          url+="?"+filterConditions[i];
-        }else{
-          url+="&"+filterConditions[i];
-        }
+        url+="&"+filterConditions[i];
       }
-      console.log("url",url);
         let response = await fetch(url,
         { method: "GET", headers: { "Content-Type": "application/json" }});
         let result = await response.json();
-        setData(result);
+        setData(result.data);
     }catch (error) {
       console.log(error);
     }
@@ -101,7 +110,7 @@ const UserPage = () => {
         </Select>
       </Box>
       <ButtonGroup float="right" marginRight="150px" marginBottom="15px">
-        <Button onClick={() => setPage((prev) => prev + 1)} colorScheme="blue" isDisabled={page === 10}>Next</Button>
+        <Button onClick={() => setPage((prev) => prev + 1)} colorScheme="blue" isDisabled={page === 10 || data.length < 10 }>Next</Button>
         <Button onClick={() => setPage((prev) => prev - 1)} colorScheme="blue" isDisabled={page === 1}>Previous</Button>
       </ButtonGroup>
       <TableContainer
