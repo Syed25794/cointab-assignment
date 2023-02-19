@@ -64,7 +64,9 @@ const getUsersData = async ( req, res )=>{
 }
 
 const filterUsersData = async ( req, res )=>{
-  const { age, gender, country } = req.query;
+  const { age, gender, country, page } = req.query;
+  const limit = 10;
+  let skips=( Number(page) - 1 )* limit;
   const query={};
   if( age ){
     query["$and"]=[{'dob.age':{$gte:Number(age)-24}},{'dob.age':{$lte:Number(age)}}]
@@ -75,11 +77,9 @@ const filterUsersData = async ( req, res )=>{
   if( country ){
     query["location.country"]=country;
   }
-  const results = await Data.find(query);
   try {
-    const results = await Data.find(query).catch((err) => {
-      console.error(err);
-    });    
+    console.log(skips);
+    const results = await Data.find(query).skip(skips).limit(limit);   
     res.status(200).send(results);
   } catch (error) {
     res.status(404).send(error);

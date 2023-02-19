@@ -8,6 +8,6 @@ const userRoutes = Router();
 userRoutes.get("/fetchData", getData);
 userRoutes.delete("/deleteData", deleteData);
 userRoutes.get("/getUsersData",checkParameters,getUsersData);
-userRoutes.get("/filterData",filterUsersData);
+userRoutes.get("/filterData",checkParameters,filterUsersData);
 
 module.exports = userRoutes;
