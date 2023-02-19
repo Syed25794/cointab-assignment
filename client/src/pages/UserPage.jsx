@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {Box,Button,ButtonGroup,Select,Table,TableContainer,Tbody,Th,Thead,Tr} from "@chakra-ui/react";
 import TableRow from "../components/TableRow";
 import countries from './../data/country.json';
@@ -11,7 +11,7 @@ const UserPage = () => {
   let filterKey=useRef({age:"",country:"",gender:""});
   const URL="https://cointab-server-t1qu.onrender.com/getUsersData";
 
-  const getData = async () => {
+  const getData =useCallback(async () => {
     const filterConditions=[];
     if( filterKey.current.age !== "" ){
       filterConditions.push(`age=${filterKey.current.age}`);
@@ -33,10 +33,14 @@ const UserPage = () => {
       );
       let data = await response.json();
       setData(data.data);
+      if( data.data.length === 0 ){
+        showAlertFun();
+      }
     } catch (error) {
       console.log(error);
+      showAlertFun();
     }
-  };
+  },[page]);
 
   const handleSelect=(e)=>{
     const { name, value}=e.target;
@@ -79,20 +83,15 @@ const UserPage = () => {
   }
 
   const showAlertFun=()=>{
+    setShowAlert(true);
     setTimeout(()=>{
-      if( data.length === 0 ){
-        setShowAlert(true);
-      }
-      setTimeout(()=>{
-        setShowAlert(false);
-      },3000)
+      setShowAlert(false);
     },3000)
   }
 
   useEffect(() => {
     getData();
-    showAlertFun();
-  }, [page]);
+  }, [getData]);
 
 
   return (
