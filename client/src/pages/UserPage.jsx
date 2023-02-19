@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -17,11 +17,12 @@ import countries from './../data/country.json';
 const UserPage = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  let filterKey=useRef({age:"",country:"",gender:""});
   console.log(data);
   const getData = async () => {
     try {
       let response = await fetch(
-        `http://localhost:8070/getUsersData?page=${page}`,
+        `https://cointab-server-t1qu.onrender.com/getUsersData?page=${page}`,
         { method: "GET", headers: { "Content-Type": "application/json" } }
       );
       let data = await response.json();
@@ -33,7 +34,46 @@ const UserPage = () => {
 
   const handleSelect=(e)=>{
     const { name, value}=e.target;
-    console.log(name,value);
+    if( name === 'age' ){
+      filterKey.current["age"]=value;
+    }
+    if( name === 'gender' ){
+      filterKey.current['gender']=value;
+    }
+    if( name === 'country' ){
+      filterKey.current['country']=value;
+    }
+    filterData();
+    console.log(filterKey);
+  }
+  const filterData= async ()=>{
+    const filterConditions=[];
+    if( filterKey.current.age !== "" ){
+      filterConditions.push(`age=${filterKey.current.age}`);
+    } 
+    if( filterKey.current.gender !== "" ){
+      filterConditions.push(`gender=${filterKey.current.gender}`);
+    } 
+    if( filterKey.current.country !== "" ){
+      filterConditions.push(`country=${filterKey.current.country}`);
+    }
+    try {
+      let url="https://cointab-server-t1qu.onrender.com/filterData";
+      for(let i=0;i<filterConditions.length;i++){
+        if( i === 0 ){
+          url+="?"+filterConditions[i];
+        }else{
+          url+="&"+filterConditions[i];
+        }
+      }
+      console.log("url",url);
+        let response = await fetch(url,
+        { method: "GET", headers: { "Content-Type": "application/json" }});
+        let result = await response.json();
+        setData(result);
+    }catch (error) {
+      console.log(error);
+    }
   }
   useEffect(() => {
     getData();
@@ -43,8 +83,8 @@ const UserPage = () => {
       <Box display="flex" flexDir="row" w="900px" m="auto" onChange={handleSelect}>
         <Select w="200px" m="20px" name="gender">
           <option value="">Choose the gender</option>
-          <option value="men">Men</option>
-          <option value="women">Women</option>
+          <option value="male">Men</option>
+          <option value="female">Women</option>
         </Select>
         <Select w="200px" m="20px" name="age" onChange={handleSelect}>
           <option value="">Choose the age</option>
