@@ -1,4 +1,4 @@
-const https = require('node:https');
+const { https } = require('https');
 const Data = require("../models/Data.model");
 const connection = require("./../config/database");
 
