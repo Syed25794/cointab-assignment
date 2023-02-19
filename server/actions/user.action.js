@@ -1,4 +1,4 @@
-const { https } = require('https');
+const  https  = require('https');
 const Data = require("../models/Data.model");
 const connection = require("./../config/database");
 
@@ -34,6 +34,7 @@ const getData = async (req, res) => {
     });
     req.end();
   } catch (error) {
+    console.log(error);
     return res.status(404).send(error);
   }
 };
