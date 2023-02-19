@@ -1,7 +1,13 @@
+const { default: mongoose } = require("mongoose");
 const https = require("node:https");
 const Data = require("../models/Data.model");
+const connection = require("./../config/database");
 
 const getData = async (req, res) => {
+  const isDataExists = await Data.find();
+  if( isDataExists.length > 0 ){
+    return res.sendStatus(304);
+  }
   try {
     const options = {
       hostname: "randomuser.me",
@@ -20,20 +26,24 @@ const getData = async (req, res) => {
         data=JSON.parse(data);
         const { results } = data;
         const response =await Data.insertMany(results);
-        res.status(200).send({"message":"Data fetched from api and successfully stored into mongodb database."});
+        return res.status(200).send({"message":"Data fetched from api and successfully stored into mongodb database."});
       });
     });
 
     req.on("error", (error) => {
-      res.status(500).send(error);
+      return res.status(500).send(error);
     });
     req.end();
   } catch (error) {
-    res.status(404).send(error);
+    return res.status(404).send(error);
   }
 };
 
-const deleteData = async ( req, res )=>{
+const deleteData = async ( req, res ,next )=>{
+  const isDataExists = await Data.find();
+  if( isDataExists.length === 0 ){
+    return res.sendStatus(404);
+  }
   try {
     let response = await Data.collection.drop();
     res.status(200).send({"msg":"userdetails collection deleted successfully.",result:response});
@@ -45,7 +55,7 @@ const deleteData = async ( req, res )=>{
 const getUsersData = async ( req, res )=>{
   const { page } = req.query;
   const limit = 10;
-  let skips=( page - 1 )* limit;
+  let skips=( Number(page) - 1 )* limit;
   try {
     const data = await Data.find().skip(skips).limit(limit);
     res.status(200).send({data});
