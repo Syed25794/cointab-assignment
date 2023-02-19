@@ -52,18 +52,6 @@ const deleteData = async ( req, res ,next )=>{
 }
 
 const getUsersData = async ( req, res )=>{
-  const { page } = req.query;
-  const limit = 10;
-  let skips=( Number(page) - 1 )* limit;
-  try {
-    const data = await Data.find().skip(skips).limit(limit);
-    res.status(200).send({data});
-  } catch (error) {
-    res.status(500).send({error});
-  }
-}
-
-const filterUsersData = async ( req, res )=>{
   const { age, gender, country, page } = req.query;
   const limit = 10;
   let skips=( Number(page) - 1 )* limit;
@@ -78,12 +66,11 @@ const filterUsersData = async ( req, res )=>{
     query["location.country"]=country;
   }
   try {
-    console.log(skips);
-    const results = await Data.find(query).skip(skips).limit(limit);   
-    res.status(200).send(results);
+    const data = await Data.find(query).skip(skips).limit(limit);
+    res.status(200).send({data});
   } catch (error) {
-    res.status(404).send(error);
+    res.status(500).send({error});
   }
-
 }
-module.exports = {getData,deleteData,getUsersData,filterUsersData};
+
+module.exports = {getData,deleteData,getUsersData};
