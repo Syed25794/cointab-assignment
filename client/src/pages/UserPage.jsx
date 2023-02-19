@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Image,
   Table,
   TableContainer,
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import TableRow from "../components/TableRow";
 
 const UserPage = () => {
   const [page, setPage] = useState(1);
@@ -43,8 +42,8 @@ const UserPage = () => {
         borderRadius="10px"
         marginBottom="20px"
       >
-        <Table variant="striped" colorScheme="teal">
-          <Thead>
+        <Table variant="striped" >
+          <Thead fontSize="30px">
             <Tr>
               <Th>Image</Th>
               <Th>Name</Th>
@@ -55,18 +54,9 @@ const UserPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data?.map((user) => (
-              <Tr key={user._id}>
-                <Td>
-                  <Image src={user.picture.medium} alt={user.name.first} />
-                </Td>
-                <Td>{`${user.name.first} ${user.name.last}`}</Td>
-                <Td>{user.gender}</Td>
-                <Td>{user.dob.age}</Td>
-                <Td>{user.email}</Td>
-                <Td>{user.location.country}</Td>
-              </Tr>
-            ))}
+            {data?.map((user) =>{
+              return <TableRow key={user._id} user={user} />
+            })}
           </Tbody>
         </Table>
       </TableContainer>

@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
-const ButtonComponent = ({ name }) => {
+const ButtonComponent = ({ name, handleClick }) => {
   return (
     <Button
       variant="solid"
@@ -13,8 +13,11 @@ const ButtonComponent = ({ name }) => {
         background: "white",
         color: "black",
         border: "1px solid black",
-        boxShadow:" 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19)",
+        boxShadow:
+          " 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19)",
       }}
+      name={name}
+      onClick={handleClick}
     >
       {name}
     </Button>
