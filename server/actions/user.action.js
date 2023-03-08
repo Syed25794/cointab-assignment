@@ -1,6 +1,17 @@
 const  https  = require('https');
 const Data = require("../models/Data.model");
 
+
+const getUserAgeCount = async ( req, res )=>{
+  try {
+    const result = await Data.find({'dob.age':{$gt:50}});
+    console.log(result);
+    res.status(200).send({count:result.length});
+  } catch (error) {
+    console.log(error);
+    res.status(404).send({error});
+  }
+}
 const getData = async (req, res) => {
   const isDataExists = await Data.find();
   if( isDataExists.length > 0 ){
@@ -73,4 +84,4 @@ const getUsersData = async ( req, res )=>{
   }
 }
 
-module.exports = {getData,deleteData,getUsersData};
+module.exports = {getData,deleteData,getUsersData,getUserAgeCount};
