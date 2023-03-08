@@ -1,4 +1,4 @@
-# Cointab Assignment
+# User Show
 
 ## Introduction
 I have to built an API to fetch some data from an API endpoint and store it into mongodb database. Then I have to show that user data into table with filtering and pagination functionalities. I have to show different alerts on the basis or API responses.
